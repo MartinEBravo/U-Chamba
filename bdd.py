@@ -86,7 +86,7 @@ sectores_de_estudios = {
 }
 
 estudiantes = pd.DataFrame(columns=['nombre', 'sexo', 'edad', 'RUT', 'correo' , 'universidad'])
-for i in range(20000):
+for i in range(10000):
 
     # Selección del Nombre y Sexo
     genero = random.randint(0, 2)
@@ -101,15 +101,26 @@ for i in range(20000):
     apellido = random.choice(apellidos)
     apellido2 = random.choice(apellidos)
 
-    # Selección de la edad y universidad
+    nombre_completo = nombre + ' ' + nombre2 + ', ' + apellido + ' ' + apellido2
+   
+    # Selección de la edad
     edad = random.randint(18, 30)
-    universidad = random.choice(universidades_chilenas)
+
+    # Selección de la universidad
+    u = random.randint(0, 100)
+    if u < 20:
+        universidad = 'Universidad de Chile'
+    elif u < 40:
+        universidad = 'Pontificia Universidad Católica de Chile'
+    elif u < 50:
+        universidad = 'Universidad de Concepción'
+    else:
+        universidad = random.choice(universidades_chilenas)
 
     # Creación del Correo
-    correo = nombre.lower() + '.' + apellido.lower() + str(random.randint(0, 999)) + '@' + correos_universidades[universidad].lower()
+    correo = nombre.lower() + '.' + apellido.lower() + '@' + correos_universidades[universidad].lower()
 
-    nombre_completo = nombre + ' ' + nombre2 + ', ' + apellido + ' ' + apellido2
-
+    # creación del RUT
     if edad < 20:
         rut = '2' + str(random.randint(0,1)) + '.' + str(random.randint(0,9)) + str(random.randint(0,9)) + str(random.randint(0,9)) + '.' + str(random.randint(0,9)) + str(random.randint(0,9)) + str(random.randint(0,9)) + '-' + random.choice(indice)
     elif edad < 24:
