@@ -1,44 +1,52 @@
-## Entidades
-
-Postulante(_RUT_, nombre, telefono, correo, genero, edad)
+{\Large \textbf{Entidades}}\\
 
 
-Universidad(_nombre_, tipo, año, estudiantes, región, acreditación, académicos, ranking, infraestructura)
+\textbf{Postulante}(\uline{RUT}: String, nombre: String, telefono: String, correo: String, genero: String, edad: Int)\\
 
 
-Compañia(_nombre_, dirección)
+\textbf{Universidad}(\uline{nombre}: String, tipo: String, año: Int, estudiantes: String, región: String, acreditación: Int, académicos: Int, ranking: Int, infraestructura: Int)\\
 
 
-País(_nombre_, pib, población, esperanza de vida)
-
-## Entidad débil
-
-OfertasTrabajo(_NombreCompañia_, _idOferta_, Modalidad, Formato, Sueldo)
-
-- _NombreCompañia_ REF Compañia(nombre)
+\textbf{Compañia}(\uline{nombre}: String, dirección: String)\\
 
 
-## Relaciones
-
-Estudia_en(_nombreUniversidad_, _RUT_, carrera, año, sector)
-
-- _nombreUniversidad_ REF Universidad(nombre)
-
-- _RUT_ REF Postulante(RUT)
-
-Postula(_idOferta_, _RUT_)
-
-- _idOferta_ REF OfertasTrabajo(idOferta)
-
-- _RUT_ REF Postulante(RUT)
-
-
-Ubicado(_N_compañia_, _N_pais_, ciudad)
-
-- _N_compañia_ REF Compañia(nombre)
-
-- _N_pais_ REF País(nombre)
+\textbf{País}(\uline{nombre}: String, pib: Int, población: Int, esperanza de vida: Int)\\
 
 
 
+%%------------------------------
+{\Large \textbf{Entidad débil}}\\
 
+
+\textbf{OfertasTrabajo}(\uline{NombreCompañia}, \uline{idOferta}: Int, Modalidad: String, Formato: String, Sueldo: Int)\\
+
+\quad \uline{NombreCompañia} REF Compañia(nombre)\\
+
+
+%%------------------------------
+{\Large \textbf{Relaciones}}\\
+
+
+\textbf{Estudia\_en}(\uline{nombreUniversidad}: String, \uline{RUT}: String, carrera: String, año: Int, sector: String)\\
+
+\quad \uline{nombreUniversidad} REF Universidad(\uline{nombre})\\
+
+\quad \uline{RUT} REF Postulante(\uline{RUT})\\
+
+
+\textbf{Postula}(\uline{idOferta}: Int, \uline{RUT}: String, \uline{nombre\_compañia}: String, \uline{nombre\_país}: String)\\
+
+\quad \uline{idOferta} REF OfertasTrabajo(\uline{idOferta})\\
+
+\quad \uline{RUT} REF Postulante(\uline{RUT})\\
+
+\quad \uline{nombre\_compañia} REF Compañia(\uline{nombre})\\
+
+\quad \uline{nombre\_país} REF País(\uline{nombre})\\
+
+
+\textbf{Ubicado}(\uline{N\_compañia}: String, \uline{N\_pais}: String, ciudad: String)\\
+
+\quad \uline{N\_compañia} REF Compañia(\uline{nombre})\\
+
+\quad  \uline{N\_pais} REF País(\uline{nombre})\\
