@@ -86,15 +86,14 @@ CREATE TABLE uchamba.Estudia_en (
 -- Tabla de Postula
 CREATE TABLE uchamba.Postula (
     idOferta         integer       not null,
-    rut              varchar (255) not null,
     nombre_compannia varchar (255) not null,
+    rut              varchar (255) not null,
     nombre_pais      varchar (255) not null,
 
     primary key (idOferta, rut, nombre_compannia, nombre_pais),
 
-    foreign key (idOferta)         references uchamba.OfertasTrabajo(id_oferta),
+    foreign key (idOferta, nombre_compannia) references uchamba.OfertasTrabajo(id_oferta, nombre_compannia),
     foreign key (rut)              references uchamba.Postulante(rut),
-    foreign key (nombre_compannia) references uchamba.Compannia(nombre),
     foreign key (nombre_pais)      references uchamba.Pais(nombre)
 );
 
@@ -109,3 +108,4 @@ CREATE TABLE uchamba.Ubicado (
     foreign key (nombre_compannia) references uchamba.Compannia(nombre),
     foreign key (nombre_pais)      references uchamba.Pais(nombre)
 );
+
