@@ -1,23 +1,9 @@
-
 import psycopg2
 import psycopg2.extras
 import csv
 import re
-
-schema = "u_chamba."
- 
-# Tablas de entidades
-tabla_postulantes = schema + "Postulante"
-tabla_universidad = schema + "Universidad"
-tabla_compannia   = schema + "Compannia"
-tabla_pais        = schema + "Pais"
-tabla_ofertas_trabajo = schema + "OfertasTrabajo"
-
-# Tablas de relaciones
-tabla_estudia_en = schema + "Estudia_en"
-tabla_postula    = schema + "Postula"
-tabla_ubicado    = schema + "Ubicado"
-
+from unidecode import unidecode
+from insert import *
 
 # Conexion a la base de datos
 conn = psycopg2.connect (
@@ -30,104 +16,175 @@ conn = psycopg2.connect (
 # Cursor
 cur = conn.cursor()
 
+# para limpiar
+def to_ascii(s: str):
+    return unidecode(s.replace("ñ","nh")).strip()
 
-# Funcion para buscar o insertar en una tabla
-def findOrInsert(table, name):
-    cur.execute("select id from "+ table +" where name=%s limit 1", [name]) # Buscar
-    r = cur.fetchone()
-    if(r):
-        return r[0]
-    cur.execute("insert into "+ table +" (name) values (%s) returning id", [name])
-    return cur.fetchone()[0] 
+#################################################
+### Solo para ahorrar un poco de trabajo
+## Borra todas las tablas
+cur.execute("DROP SCHEMA uchamba CASCADE;")
+## Crear todas las tablas
+cur.execute("CREATE SCHEMA uchamba;")
+with open("bdd.sql", "r") as consultas: 
+    cur.execute(to_ascii(consultas.read()))
+##################################################
+
+########## Region ##########
+with open("DataSets/regiones.csv", "r", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+    i = 0
+    for row in reader:
+        i+=1
+        if i==1:
+            id_index      = row.index("Reg")
+            nombre_index = row.index("Descripción series")
+            PIB_index    = row.index("2022")
+            continue
+        id_reg  = to_ascii(row[id_index])
+        nombre  = to_ascii(row[nombre_index]).lower()
+        pib     = int(float(row[PIB_index].replace(",","")))
+        insertRegion(cur, id_reg, nombre, pib, None)
+
+########## Comuna ##########
+with open("DataSets/comunas.csv", "r", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+    i = 0
+    for row in reader:
+        i+=1
+        if i==1:
+            id_index        = row.index("ID")
+            nombre_index    = row.index("Nombre")
+            id_region_index = row.index("ID Region")
+            continue
+        id_com  = to_ascii(row[id_index])
+        nombre  = to_ascii(row[nombre_index]).lower()
+        id_reg  = to_ascii(row[id_region_index])
+        insertComuna(cur, id_com, nombre, id_reg)
 
 
+########## Postulante ##########
 with open("DataSets/estudiantes.csv", "r", encoding="utf-8") as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     i = 0
     for row in reader:
         i+=1
         if i==1:
             #indice personas
+            correo_index      = row.index("correo")
+            rut_index         = row.index("RUT")
+            telefono_index    = row.index("telefono")
             nombre_index      = row.index("nombre")
             sexo_index        = row.index("sexo")
             edad_index        = row.index("edad")
-            rut_index         = row.index("RUT")
-            correo_index      = row.index("correo")
-            universidad_index = row.index("universidad")
-            telefono_index    = row.index("telefono")
-            sector_index      = row.index("sector")
-            carrera_index     = row.index("carrera")
-            anno_index        = row.index("año")
-            postulacion_index = row.index("postulacion")
-            empresa_index    = row.index("empresa") 
+
             continue
+        if i>100: break
+        correo   = to_ascii(row[correo_index])
+        rut      = to_ascii(row[rut_index])
+        telefono = to_ascii(row[telefono_index])
+        nombre   = to_ascii(row[nombre_index])
+        genero   = to_ascii(row[sexo_index])
+        edad     = to_ascii(row[edad_index])
+        insertPostulante(cur, rut, nombre, telefono, correo, genero, edad)
 
 
+
+########## Universidad ##########
+########## Ubicacion_Universidad ##########
 with open("DataSets/universidad.csv", "r", encoding="utf-8") as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     i = 0
     for row in reader:
         i+=1
         if i==1:
-            #indice
-            universidad_index       = row.index("Universidad")
-            anno_index              = row.index("Año")
             Tipo_index              = row.index("Tipo")
-            Estudiantes_index       = row.index("Estudiantes")
-            Rankingnacional_index   = row.index("Ranking nacional")
-            Rankingmundial_index    = row.index("Ranking mundial")
+            universidad_index       = row.index("Universidad")
+            Regioncasacentral_index = row.index("Región casa central")
             Acreditacion_index      = row.index("Acreditación (años)")
             Academicos_index        = row.index("Académicos (número)")
+            Rankingnacional_index   = row.index("Ranking nacional")
+            Rankingmundial_index    = row.index("Ranking mundial")
             Infraestructura_index   = row.index("Infraestructura (m2)") 
-            Regioncasacentral_index = row.index("Región casa central")
+            Estudiantes_index       = row.index("Estudiantes")
+            anho_index              = row.index("Año")
             continue
 
-with open("DataSets/empresas.csv", "r", encoding="utf-8") as csvfile:
+        universidad     = to_ascii(row[universidad_index])
+        tipo            = to_ascii(row[Tipo_index])
+        anho            = to_ascii(row[anho_index])
+        estudiantes     = to_ascii(row[Estudiantes_index])
+        acreditacion    = to_ascii(row[Acreditacion_index]) 
+        academicos      = to_ascii(row[Academicos_index]) 
+        ranking         = to_ascii(row[Rankingnacional_index]) 
+        infraestructura = to_ascii(row[Infraestructura_index])
+
+        region_id       = get_id_region(cur, to_ascii(row[Regioncasacentral_index]).lower())
+
+        if region_id:
+            insertUniversidad(cur, universidad, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura)
+            insertUbicacionUniversidad(cur, universidad, region_id)
+
+
+########## Companhia ##########
+########## Ubicado ##########
+with open("DataSets/companhias.csv", "r", encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     i = 0
     for row in reader:
         i+=1
         if i==1:
-            name_index       = row.index("Nombre Empresa")
-            direccion_index  = row.index("Dirección")
-            ciudad_e_index   = row.index("Ciudad Empresa")
-            pais_e_index     = row.index("País Empresa")
-            Pib_index        = row.index("PIB País")
-            poblacion_index  = row.index("Población País")
-            Esperanza_index  = row.index("Esperanza de Vida País")
+            rut_index     = row.index("RUT")
+            nombre_index  = row.index("Razon Social")
+            comuna_index  = row.index("Comuna Social")
+            registr_index = row.index("Fecha de registro (ultima firma)")
+            capital_index = row.index("Capital")
             continue
 
+        if i>100: break
+        rut      = to_ascii(row[rut_index])
+        rut      = f"{rut[:2]}.{rut[2:5]}.{rut[5:10]}"
+        nombre   = to_ascii(row[nombre_index])
+        registro = to_ascii(row[registr_index])
+        capital  = to_ascii(row[capital_index])
+        comuna   = get_id_comuna(cur, to_ascii(row[comuna_index]).lower().strip())
+        if comuna:
+            insertCompanhia(cur, rut, nombre, registro, capital)
+            insert_Ubicacion_Companhia(cur, rut, comuna)
 
-with open("DataSets/countries.csv", "r", encoding="utf-8") as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
+
+########## Estudia_en ##########
+with open("DataSets/estudiantes.csv", "r", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     i = 0
     for row in reader:
         i+=1
         if i==1:
-            #indice
-            Country_index    = row.index("Country")
-            Region_index     = row.index("Region")
-            Population_index = row.index("Population")
+            rut_index         = row.index("RUT")
+            universidad_index = row.index("universidad")
 
-            Area (sq. mi.)_index = row.index("Area (sq. mi.)")
-            Pop. Density (per sq. mi.)_index = row.index("Pop. Density (per sq. mi.)")
-            Coastline (coast/area ratio)_index = row.index("Coastline (coast/area ratio)")
-            Net migration_index = row.index("Net migration")
-            Infant mortality (per 1000 births)_index = row.index("Infant mortality (per 1000 births)")
-            GDP ($ per capita)_index = row.index("GDP ($ per capita)")
-            Literacy (%)_index = row.index("Literacy (%)")
-            Phones (per 1000)_index = row.index("Phones (per 1000)")
-            Arable (%)_index = row.index("Arable (%)")
-            Crops (%)_index = row.index("Crops (%)")
-            Other (%)_index = row.index("Other (%)")
-
-            Climate_index     = row.index("Climate")
-            Birthrate_index   = row.index("Birthrate")
-            Deathrate_index   = row.index("Deathrate")
-            Agriculture_index = row.index("Agriculture")
-            Industry_index    = row.index("Industry")
-            Service_index     = row.index("Service")
+            sector_index      = row.index("sector")
+            carrera_index     = row.index("carrera")
+            anho_index        = row.index("año")        
             continue
+
+        if i>100: break
+        rut         = to_ascii(row[rut_index])
+        universidad = to_ascii(row[universidad_index])
+        sector      = to_ascii(row[sector_index])
+        carrera     = to_ascii(row[carrera_index])
+        anho        = to_ascii(row[anho_index])
+
+        insert_Estudia_en(cur, rut, universidad, sector, carrera, anho)
+
+
+########## Ofertas ##########
+
+
+
+########## Postula ##########
+
+
 
 conn.commit()
 conn.close()
