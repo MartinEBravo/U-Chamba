@@ -121,10 +121,10 @@ ofertas_de_practicas = {
     }
 }
 
-empresas = {
-    "Ciencias de la Salud": ["Clínica Alemana", "Clínica Las Condes", "Clínica Santa María", "Clínica Dávila", "Clínica Indisa", "Clínica Alemana Norte", "Hospital San Juan de Dios", "Clínica Los Coihues"],
-    "Ciencias Sociales y Humanidades": ["Banco Santander", "Banco de Chile", "Banco Estado", "Banco BCI", "Banco Itaú", "Universidad de Chile", "Universidad Católica de Chile", "Universidad de Santiago de Chile"],
-    "Ingeniería y Tecnología": ["Microsoft", "Google", "Amazon", "Apple", "Facebook", "Tesla", "Netflix", "Adobe", "Intel", "SpaceX", "IBM", "Cisco", "Oracle"],
-    "Ciencias Naturales": ["Laboratorio Chile", "Laboratorio Pasteur", "Laboratorio Knop", "Laboratorio Andrómaco", "Laboratorio Recalcine", "Laboratorio Bayer", "Laboratorio Roche", "Laboratorio Pfizer"],
-    "Arte y Diseño": ["Agencia McCann", "Agencia BBDO", "Agencia JWT", "Agencia Ogilvy", "Agencia Young & Rubicam", "Agencia DDB", "Agencia Leo Burnett", "Agencia Saatchi & Saatchi"],
-}
+modalidades_ofertas = [
+    "Trabajo presencial", "Trabajo remoto",
+]
+
+formatos_ofertas = [
+    "Jornada de tiempo completo", "Jornada de medio tiempo", "Jornada de tiempo parcial", "Jornadas de turnos", "Jornadas flexibles"
+]

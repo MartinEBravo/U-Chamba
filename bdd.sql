@@ -15,19 +15,20 @@
 
 -- Tabla Regiones
 CREATE TABLE uchamba.Region (
-  id              integer      primary key,
-  nombre          varchar(255) not null,
-  pib             bigint,
-  esperanza_vida  integer
+    id              integer      primary key,
+    nombre          varchar(255) not null,
+    poblacion       bigint,
+    pib             bigint,
+    esperanza_vida  integer
 );
 
 -- Tabla Comunas
 CREATE TABLE uchamba.Comuna (
-  id        integer      primary key,
-  nombre    varchar(255) not null,
-  region_id integer      not null,
+    id        integer      primary key,
+    nombre    varchar(255) not null,
+    region_id integer      not null,
 
-  foreign key (region_id) REFERENCES uchamba.Region(id)
+    foreign key (region_id) REFERENCES uchamba.Region(id)
 );
 
 -- Tabla de Postulantes
@@ -50,18 +51,24 @@ CREATE TABLE uchamba.Universidad (
     acreditacion    varchar (255) not null,
     academicos      integer       not null,
     ranking         integer       not null,
-    infraestructura integer       not null
+    infraestructura integer       not null,
+    region_id       integer       not null,
+
 
     -- tipo puede ser otra tabla
     tipo            varchar (255) not null,
+    foreign key (region_id)  references uchamba.Region(id)
 );
 
 -- Tabla de Compañias
 CREATE TABLE uchamba.Companhia (
     rut       varchar (12)  primary key,
     nombre    varchar (255) not null,
+    comuna_id integer       not null,
     registro  varchar (10),
-    capital   bigint
+    capital   bigint,
+
+    foreign key (comuna_id) references uchamba.Comuna(id)
 );
 
 
@@ -74,6 +81,7 @@ CREATE TABLE uchamba.OfertasTrabajo (
     id         bigserial,
     comp_rut   varchar (12)  not null,
 
+    titulo     varchar (255) not null,
     sueldo     integer       not null,
 
     -- modalidad y formato pueden ser otra tabla
@@ -111,33 +119,9 @@ CREATE TABLE uchamba.Postula (
     oferta_id integer       not null,
     comp_rut  varchar (12)  not null,
     post_rut  varchar (12)  not null,
-    comuna_id integer       not null,
 
-    primary key (oferta_id, comp_rut, post_rut, comuna_id),
+    primary key (oferta_id, comp_rut, post_rut),
 
     foreign key (oferta_id, comp_rut) references uchamba.OfertasTrabajo(id, comp_rut),
-    foreign key (post_rut)            references uchamba.Postulante(rut),
-    foreign key (comuna_id)           references uchamba.Comuna(id)
+    foreign key (post_rut)            references uchamba.Postulante(rut)
 );
-
--- Tabla de Ubicacion_Compnahia
-CREATE TABLE uchamba.Ubicacion_Companhia (
-    comp_rut    varchar (12) not null,
-    comuna_id   integer      not null,
-
-    primary key (comp_rut, comuna_id),
-
-    foreign key (comp_rut)  references uchamba.Companhia(rut),
-    foreign key (comuna_id) references uchamba.Comuna(id)
-); 
-
--- Tabla de Ubicacion_Universidad
-CREATE TABLE uchamba.Ubicacion_Universidad (
-    uni_nombre  varchar (255) not null,
-    region_id   integer       not null,
-
-    primary key (uni_nombre, region_id),
-
-    foreign key (uni_nombre) references uchamba.Universidad(nombre),
-    foreign key (region_id)  references uchamba.Region(id)
-); 

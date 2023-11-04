@@ -37,13 +37,13 @@ def insertPostulante(cur, rut, nombre, tel, email, genero, edad):
                 " values (%s, %s, %s, %s, %s, %s)",
                 [rut, nombre, tel, email, genero, edad])
 
-def insertUniversidad(cur, nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura):
+def insertUniversidad(cur, nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura, region_id):
     cur.execute(f"""
                 insert into {tabla_universidad}
-                (nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura)
-                values (%s, %s, %s, %s, %s, %s, %s, %s)
+                (nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura, region_id)
+                values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                [nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura])
+                [nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura, region_id])
 
 def insertUbicacionUniversidad(cur, universidad, region_id):
     cur.execute(f"""
@@ -53,23 +53,17 @@ def insertUbicacionUniversidad(cur, universidad, region_id):
                 """,
                 [universidad, region_id])
     
-def insertCompanhia(cur, rut, nombre, registro, capital):
+def insertCompanhia(cur, rut, nombre, registro, capital, comuna_id):
     cur.execute(" insert into"+tabla_companhia+
-                " (rut, nombre, registro, capital)"+
-                " values (%s, %s, %s, %s)",
-                [rut, nombre, registro, capital])
+                " (rut, nombre, registro, capital, comuna_id)"+
+                " values (%s, %s, %s, %s, %s)",
+                [rut, nombre, registro, capital, comuna_id])
 
 def insert_Estudia_en(cur, rut, univerdidad, sector, carrera, anho):
     cur.execute(" insert into"+tabla_estudia_en+
                 " (post_rut, uni_nombre, sector, carrera, anho)"+
                 " values (%s, %s, %s, %s, %s)",
                 [rut, univerdidad, sector, carrera, anho])
-
-def insert_Ubicacion_Companhia(cur, comp_rut, comuna_id):
-    cur.execute(" insert into"+tabla_ubicacion_comp+
-                " (comp_rut, comuna_id)"+
-                " values (%s, %s)",
-                [comp_rut, comuna_id])
 
 def get_id_region(cur, region):
     cur.execute(" select id from"+tabla_region+
@@ -86,3 +80,29 @@ def get_id_comuna(cur, comuna):
     r = cur.fetchone()
     if r: return r[0]
     else: return None
+
+def insert_oferta(cur, id_oferta, titulo, rut, sueldo, modalidad, formato):
+    cur.execute(f"""
+                select rut from {tabla_companhia} 
+                where rut=%s limit 1;
+                """,[rut])
+    r = cur.fetchone()
+    if r:
+        cur.execute(f"""
+                insert into {tabla_ofertas_trabajo}
+                (id, titulo, comp_rut, sueldo, modalidad, formato)
+                values (%s, %s, %s, %s, %s, %s)
+                """, [id_oferta, titulo, rut, sueldo, modalidad, formato])
+
+def insert_postulacion(cur, id_oferta, rut_comp, rut_post):
+    cur.execute(f"""
+                select rut from {tabla_companhia} 
+                where rut=%s limit 1;
+                """,[rut_comp])
+    r = cur.fetchone()
+    if r:
+        cur.execute(f"""
+                insert into {tabla_postula}
+                (oferta_id, comp_rut, post_rut)
+                values (%s, %s, %s)
+                """, [id_oferta, rut_comp, rut_post])
