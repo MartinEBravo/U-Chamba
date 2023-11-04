@@ -39,19 +39,21 @@ CREATE TABLE uchamba.Postulante (
     genero   varchar (255) not null,
     edad     integer       not null,
 
-    CONSTRAINT genero_valido CHECK (genero IN ('Hombre', 'Mujer'))
+    CONSTRAINT genero_valido CHECK (genero IN ('M', 'F'))
 );
 
 -- Tabla de Universidades
 CREATE TABLE uchamba.Universidad (
     nombre          varchar (255) primary key,
-    tipo            varchar (255) not null,
     anho            integer       not null,
     estudiantes     integer       not null,
     acreditacion    varchar (255) not null,
     academicos      integer       not null,
     ranking         integer       not null,
     infraestructura integer       not null
+
+    -- tipo puede ser otra tabla
+    tipo            varchar (255) not null,
 );
 
 -- Tabla de Compañias
@@ -69,12 +71,14 @@ CREATE TABLE uchamba.Companhia (
 
 -- Tabla de Ofertas de Trabajo
 CREATE TABLE uchamba.OfertasTrabajo (
-    id         integer       not null,
+    id         bigserial,
     comp_rut   varchar (12)  not null,
 
+    sueldo     integer       not null,
+
+    -- modalidad y formato pueden ser otra tabla
     modalidad  varchar (255) not null,
     formato    varchar (255) not null,
-    sueldo     integer       not null,
 
     primary key (id, comp_rut),
 
@@ -90,8 +94,10 @@ CREATE TABLE uchamba.Estudia_en (
     uni_nombre varchar (255) not null,
     post_rut   varchar (12)  not null,
 
-    carrera  varchar (255) not null,
     anho     integer       not null,
+
+    -- carrera y sector pueden ser otras tabla
+    carrera  varchar (255) not null,
     sector   varchar (255) not null,
 
     primary key (uni_nombre, post_rut),
@@ -103,8 +109,8 @@ CREATE TABLE uchamba.Estudia_en (
 -- Tabla de Postula
 CREATE TABLE uchamba.Postula (
     oferta_id integer       not null,
-    comp_rut  varchar (12) not null,
-    post_rut  varchar (12) not null,
+    comp_rut  varchar (12)  not null,
+    post_rut  varchar (12)  not null,
     comuna_id integer       not null,
 
     primary key (oferta_id, comp_rut, post_rut, comuna_id),

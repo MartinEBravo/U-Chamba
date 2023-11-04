@@ -33,18 +33,19 @@ with open("bdd.sql", "r") as consultas:
 ########## Region ##########
 with open("DataSets/regiones.csv", "r", encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-    i = 0
-    for row in reader:
-        i+=1
-        if i==1:
+    for i, row in enumerate(reader):
+        if i==0:
             id_index      = row.index("Reg")
-            nombre_index = row.index("Descripción series")
-            PIB_index    = row.index("2022")
+            nombre_index  = row.index("Descripción series")
+            PIB_index     = row.index("2022")
+            desocupacion_index = row.index("Desocupacion")
             continue
         id_reg  = to_ascii(row[id_index])
         nombre  = to_ascii(row[nombre_index]).lower()
         pib     = int(float(row[PIB_index].replace(",","")))
-        insertRegion(cur, id_reg, nombre, pib, None)
+        desocupacion = int(float(row[desocupacion_index]))
+        print(id_reg, nombre, pib, desocupacion)
+        insertRegion(cur, id_reg, nombre, pib, desocupacion)
 
 ########## Comuna ##########
 with open("DataSets/comunas.csv", "r", encoding="utf-8") as csvfile:

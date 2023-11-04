@@ -1,17 +1,17 @@
-Reg,Descripción series,2022
-1,Región de Arica y Parinacota,"1,587.31"
-2,Región de Tarapacá,"4,917.11"
-3,Región de Antofagasta,"16,091.39"
-4,Región de Atacama,"4,079.94"
-5,Región de Coquimbo,"6,167.34"
-6,Región de Valparaíso,"15,038.94"
-7,Región Metropolitana de Santiago,"85,102.23"
-8,Región del Libertador General Bernardo O'Higgins,"8,395.80"
-9,Región del Maule,"7,813.27"
-10,Región de Ñuble,"2,662.69"
-11,Región del Biobío,"12,536.08"
-12,Región de La Araucanía,"5,777.52"
-13,Región de Los Ríos,"2,682.44"
-14,Región de Los Lagos,"7,002.66"
-15,Región de Aysén del General Carlos Ibáñez del Campo,"1,229.42"
-16,Región de Magallanes y de la Antártica Chilena,"1,904.25"
+Reg,Descripción series,2022,Desocupacion
+1,Región de Tarapacá,"4,917.11",6.33
+2,Región de Antofagasta,"16,091.39",7.24
+3,Región de Atacama,"4,079.94",8.85
+4,Región de Coquimbo,"6,167.34",11.22
+5,Región de Valparaíso,"15,038.94",8.92
+6,Región del Libertador General Bernardo O'Higgins,"8,395.80",8.30
+7,Región del Maule,"7,813.27",9.58
+8,Región del Biobío,"12,536.08",8.57
+9,Región de La Araucanía,"5,777.52",8.03
+10,Región de Los Lagos,"7,002.66",3.67
+11,Región de Aysén del General Carlos Ibáñez del Campo,"1,229.42",5.03
+12,Región de Magallanes y de la Antártica Chilena,"1,904.25",6.53
+13,Región Metropolitana de Santiago,"85,102.23",9.62
+14,Región de Los Ríos,"2,682.44",8.47
+15,Región de Arica y Parinacota,"1,587.31",7.78
+16,Región de Ñuble,"2,662.69",10.01
