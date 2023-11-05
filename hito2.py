@@ -1,6 +1,6 @@
 import csv
 from unidecode import unidecode
-from insert import *
+from consultas import *
 from conn import get_conn
 
 # para limpiar
@@ -33,13 +33,15 @@ with open("DataSets/regiones.csv", "r", encoding="utf-8") as csvfile:
             nombre_index  = row.index("Descripción series")
             PIB_index     = row.index("2022")
             desocupacion_index = row.index("Desocupacion")
+            poblacion_index = row.index("Poblacion")
             continue
         id_reg  = to_ascii(row[id_index])
         nombre  = to_ascii(row[nombre_index]).lower()
         pib     = int(float(row[PIB_index].replace(",","")))
         desocupacion = int(float(row[desocupacion_index]))
+        poblacion = int(row[poblacion_index].replace(".",""))
 
-        regiones += [id_reg, nombre, pib, desocupacion]
+        regiones += [id_reg, nombre, pib, desocupacion, poblacion]
 
     insert_regiones(regiones)
 
@@ -60,7 +62,9 @@ with open("DataSets/comunas.csv", "r", encoding="utf-8") as csvfile:
 
         comunas += [id_com, nombre, id_reg]
 
+
     insert_comunas(comunas)
+
 
 
 ########## Postulante ##########
@@ -84,6 +88,11 @@ with open("DataSets/estudiantes.csv", "r", encoding="utf-8") as csvfile:
         nombre   = to_ascii(row[nombre_index])
         genero   = to_ascii(row[sexo_index])
         edad     = to_ascii(row[edad_index])
+
+        if i%25_000 == 0:
+            insert_postulantes(postulantes)
+            postulantes = []
+
         postulantes += [rut, nombre, telefono, correo, genero, edad]
 
     insert_postulantes(postulantes)
@@ -119,10 +128,17 @@ with open("DataSets/universidad.csv", "r", encoding="utf-8") as csvfile:
         ranking         = to_ascii(row[Rankingnacional_index]) 
         infraestructura = to_ascii(row[Infraestructura_index])
         region_id       = get_id_region(to_ascii(row[Regioncasacentral_index]).lower())
+
+        if i%25_000 == 0:
+            insert_universidades(universidades)
+            universidades = []
+
         universidades += [universidad, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura, region_id]
     insert_universidades(universidades)
 
 
+comunas = get_comunas_and_id()
+rut_companhias = []
 ########## Companhia ##########
 ########## Ubicado ##########
 print("########## Companhia y Ubi ##########")
@@ -144,14 +160,22 @@ with open("DataSets/companhias.csv", "r", encoding="utf-8") as csvfile:
         registro = registro if registro[2]=="-" else None
         capital = to_ascii(row[capital_index])
         capital = int(capital) if capital.isdigit() else None
-        comuna_id    = get_id_comuna(to_ascii(row[comuna_index]).lower().strip())
+        comuna  = to_ascii(row[comuna_index]).lower()
+        if comuna not in comunas: continue
+        rut_companhias += [rut]
+        comuna_id = comunas[comuna]
+
+        if i%25_000 == 0:
+            insert_companhias(companhias)
+            companhias = []
+
         companhias += [rut, nombre, registro, capital, comuna_id]
     insert_companhias(companhias)
 
 
 
 ########## Estudia_en ##########
-print("########## Estudia_en ##########")
+print("########## Estudia_en ##########") 
 with open("DataSets/estudiantes.csv", "r", encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     estudian_en = []
@@ -168,6 +192,11 @@ with open("DataSets/estudiantes.csv", "r", encoding="utf-8") as csvfile:
         sector      = to_ascii(row[sector_index])
         carrera     = to_ascii(row[carrera_index])
         anho        = to_ascii(row[anho_index])
+
+        if i%25_000 == 0:
+            insert_estudian_en(estudian_en)
+            estudian_en = []
+
         estudian_en += [rut, universidad, sector, carrera, anho]
     insert_estudian_en(estudian_en)
 
@@ -193,6 +222,12 @@ with open("DataSets/ofertas.csv", "r", encoding="utf-8") as csvfile:
         sueldo    = row[sueldo_index]
         modalidad = to_ascii(row[modalidad_index])
         formato   = to_ascii(row[formato_index])
+        if rut not in rut_companhias: continue
+
+        if i%25_000 == 0:
+            insert_ofertas(ofertas)
+            ofertas = []
+
         ofertas += [id_oferta, titulo, rut, sueldo, modalidad, formato]
     insert_ofertas(ofertas)
 
@@ -212,5 +247,11 @@ with open("DataSets/postulaciones.csv", "r", encoding="utf-8") as csvfile:
         rut_comp  = row[rut_comp_index]
         rut_comp  = f"{rut_comp[:2]}.{rut_comp[2:5]}.{rut_comp[5:10]}"
         rut_post  = row[rut_post_index]
+        if rut_comp not in rut_companhias: continue
+
+        if i%25_000 == 0:
+            insert_postulaciones(postulaciones)
+            postulaciones = []
+
         postulaciones += [id_oferta, rut_comp, rut_post]
     insert_postulaciones(postulaciones)
