@@ -45,19 +45,12 @@ def insertUniversidad(cur, nombre, tipo, anho, estudiantes, acreditacion, academ
                 """,
                 [nombre, tipo, anho, estudiantes, acreditacion, academicos, ranking, infraestructura, region_id])
 
-def insertUbicacionUniversidad(cur, universidad, region_id):
-    cur.execute(f"""
-                insert into {tabla_ubicacion_uni}
-                (uni_nombre, region_id)
-                values (%s, %s)
-                """,
-                [universidad, region_id])
-    
 def insertCompanhia(cur, rut, nombre, registro, capital, comuna_id):
-    cur.execute(" insert into"+tabla_companhia+
-                " (rut, nombre, registro, capital, comuna_id)"+
-                " values (%s, %s, %s, %s, %s)",
-                [rut, nombre, registro, capital, comuna_id])
+    cur.execute(f"""
+                insert into {tabla_companhia}
+                (rut, nombre, registro, capital, comuna_id)
+                values (%s, %s, %s, %s, %s);
+                """, [rut, nombre, registro, capital, comuna_id])
 
 def insert_Estudia_en(cur, rut, univerdidad, sector, carrera, anho):
     cur.execute(" insert into"+tabla_estudia_en+

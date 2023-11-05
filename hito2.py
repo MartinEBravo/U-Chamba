@@ -149,6 +149,7 @@ with open("DataSets/companhias.csv", "r", encoding="utf-8") as csvfile:
         nombre   = to_ascii(row[nombre_index])
 
         registro = to_ascii(row[registr_index])
+        registro = registro if registro[2]=="-" else None
 
         try:
             capital  = int(to_ascii(row[capital_index]))
@@ -159,6 +160,7 @@ with open("DataSets/companhias.csv", "r", encoding="utf-8") as csvfile:
 
         if comuna_id:
             insertCompanhia(cur, rut, nombre, registro, capital, comuna_id)
+
 
 
 ########## Estudia_en ##########
