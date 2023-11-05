@@ -1,15 +1,15 @@
-schema = " uchamba."
+schema = "uchamba."
  
 # Tablas de entidades
-tabla_postulantes     = schema + "Postulante "
-tabla_universidad     = schema + "Universidad "
-tabla_companhia       = schema + "Companhia "
-tabla_region          = schema + "Region "
-tabla_comuna          = schema + "Comuna "
+tabla_postulante      = schema + "Postulante"
+tabla_universidad     = schema + "Universidad"
+tabla_companhia       = schema + "Companhia"
+tabla_region          = schema + "Region"
+tabla_comuna          = schema + "Comuna"
 
 # entidad debil
-tabla_ofertas_trabajo = schema + "OfertasTrabajo "
+tabla_ofertas_trabajo = schema + "OfertasTrabajo"
 
 # Tablas de relaciones
-tabla_estudia_en     = schema + "Estudia_en "
-tabla_postula        = schema + "Postula "
+tabla_estudia_en     = schema + "Estudia_en"
+tabla_postula        = schema + "Postula"

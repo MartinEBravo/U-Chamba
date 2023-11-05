@@ -64,8 +64,8 @@ CREATE TABLE uchamba.Universidad (
 CREATE TABLE uchamba.Companhia (
     rut       varchar (12)  primary key,
     nombre    varchar (255) not null,
-    comuna_id integer       not null,
     registro  varchar (10),
+    comuna_id integer,
     capital   bigint,
 
     foreign key (comuna_id) references uchamba.Comuna(id)
